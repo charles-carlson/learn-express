@@ -94,7 +94,25 @@ app.post('/write/adduser', async (req: UserRequest, res: Response) => {
     res.status(500).send('Error saving user');
   }
 });
+app.use('/read/username/:name',addMsgToRequest)
+app.get('/read/username/:name',async (req: UserRequest, res:Response)=>{
+    try {
+        let user_search = req.params.name  
+        const found_user = req.users?.filter((user:User):boolean=>{
+           return user.username === user_search 
+        })
+        //filter, check if username === name 
+        if(!found_user){
+            throw Error("User not found");
+        }
+        else{
+            return res.status(200).json(found_user);
+        }
+    }catch(e:any){
+      return res.status(400).json({message:e.message});
+    }
 
+})
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
